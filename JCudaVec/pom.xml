@@ -4,15 +4,10 @@
 
     <groupId>org.jcuda</groupId>
     <artifactId>jcuda-vec</artifactId>
-    <version>0.0.2-SNAPSHOT</version>
+    <version>0.0.2</version>
 
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-        
-        <!-- Skipping the tests is enabled by default, until JCuda 
-             itself (and the native libraries) can be resolved
-        -->
-        <skipTests>true</skipTests>
     </properties>
 
     <name>JCudaVec</name>
@@ -35,6 +30,12 @@
             </roles>
         </developer>
     </developers>
+
+    <scm>
+        <connection>scm:git:git@github.com:jcuda/jcuda-vec.git</connection>
+        <developerConnection>scm:git:git@github.com:jcuda/jcuda-vec.git</developerConnection>
+        <url>git@github.com:jcuda/jcuda-vec.git</url>
+    </scm>
 
     <dependencies>
         <dependency>
