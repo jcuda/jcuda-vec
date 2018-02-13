@@ -1,3 +1,8 @@
 JCudaVec/target/
 /output
 /bundles
+/JCudaVec/.settings
+/JCudaVec/target
+/JCudaVec/.classpath
+/JCudaVec/.project
+/JCudaVec/*.dll
