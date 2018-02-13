@@ -2,7 +2,7 @@
  * JCudaVec - Vector operations for JCuda 
  * http://www.jcuda.org
  *
- * Copyright (c) 2013-2015 Marco Hutter - http://www.jcuda.org
+ * Copyright (c) 2013-2018 Marco Hutter - http://www.jcuda.org
  */
 
 extern "C"
@@ -445,7 +445,7 @@ __global__ void vec_coshf (size_t n, float *result, float  *x)
 }
 
 
-// Calculate the cosine of the input argument × p .
+// Calculate the cosine of the input argument ï¿½ p .
 extern "C"
 __global__ void vec_cospif (size_t n, float *result, float  *x)
 {
@@ -781,7 +781,7 @@ __global__ void vec_sinhf (size_t n, float *result, float  *x)
 }
 
 
-// Calculate the sine of the input argument × p .
+// Calculate the sine of the input argument ï¿½ p .
 extern "C"
 __global__ void vec_sinpif (size_t n, float *result, float  *x)
 {

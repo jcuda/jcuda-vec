@@ -2,7 +2,7 @@
  * JCudaVec - Vector operations for JCuda 
  * http://www.jcuda.org
  *
- * Copyright (c) 2013-2015 Marco Hutter - http://www.jcuda.org
+ * Copyright (c) 2013-2018 Marco Hutter - http://www.jcuda.org
  * 
  * Permission is hereby granted, free of charge, to any person
  * obtaining a copy of this software and associated documentation
@@ -28,9 +28,7 @@
 
 package jcuda.vec;
 
-import org.junit.After;
 import org.junit.Assert;
-import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.JUnit4;
@@ -41,26 +39,13 @@ import org.junit.runners.JUnit4;
  * and found in the module.
  */
 @RunWith(JUnit4.class)
+@SuppressWarnings("javadoc")
 public class TestVecFloatCalls
 {
-    @Before 
-    public void init()
-    {
-        TestUtil.init();
-        VecFloat.init();
-    }
-    
     @Test
     public void testVecFloatCalls()
     {
         boolean passed = VecCaller.testCalls(VecFloat.class);
         Assert.assertTrue("Call to VecFloat method failed", passed);
-    }
-        
-    @After 
-    public void shutdown()
-    {
-        VecFloat.shutdown();
-        TestUtil.shutdown();
     }
 }

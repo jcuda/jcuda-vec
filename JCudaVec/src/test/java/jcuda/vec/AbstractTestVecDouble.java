@@ -2,7 +2,7 @@
  * JCudaVec - Vector operations for JCuda 
  * http://www.jcuda.org
  *
- * Copyright (c) 2013-2015 Marco Hutter - http://www.jcuda.org
+ * Copyright (c) 2013-2018 Marco Hutter - http://www.jcuda.org
  * 
  * Permission is hereby granted, free of charge, to any person
  * obtaining a copy of this software and associated documentation
@@ -27,9 +27,7 @@
  */
 package jcuda.vec;
 
-import org.junit.After;
 import org.junit.Assert;
-import org.junit.Before;
 import org.junit.runner.RunWith;
 import org.junit.runners.JUnit4;
 
@@ -39,24 +37,15 @@ import org.junit.runners.JUnit4;
 @RunWith(JUnit4.class)
 public abstract class AbstractTestVecDouble
 {
-    @Before 
-    public void init()
-    {
-        TestUtil.init();
-        VecDouble.init();
-    }
-    
+    /**
+     * Just passes the given test to {@link VecDoubleCoreRunner#runTest}
+     * and asserts that the result is <code>true</code>
+     * 
+     * @param testCore The core to execute
+     */
     protected void runTest(AbstractCoreDouble testCore)
     {
         boolean passed = VecDoubleCoreRunner.runTest(testCore);
         Assert.assertTrue(testCore+" failed", passed);
     }
-    
-    @After 
-    public void shutdown()
-    {
-        VecDouble.shutdown();
-        TestUtil.shutdown();
-    }
-    
 }

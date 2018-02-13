@@ -2,7 +2,7 @@
  * JCudaVec - Vector operations for JCuda 
  * http://www.jcuda.org
  *
- * Copyright (c) 2013-2015 Marco Hutter - http://www.jcuda.org
+ * Copyright (c) 2013-2018 Marco Hutter - http://www.jcuda.org
  * 
  * Permission is hereby granted, free of charge, to any person
  * obtaining a copy of this software and associated documentation
@@ -32,6 +32,7 @@ import java.util.Locale;
 /**
  * Utility class storing timing information for the benchmarks
  */
+@SuppressWarnings("javadoc")
 class Timing
 {
     private String name;
@@ -93,7 +94,7 @@ class Timing
     String createString(int nameWidth)
     {
         StringBuilder sb = new StringBuilder();
-        sb.append(String.format("%-"+nameWidth+"s ", name));
+        sb.append(String.format("%-" + nameWidth + "s ", name));
         sb.append(format(hostDurationMs));
         sb.append(format(deviceCoreCurationMs));
         sb.append(format(deviceTotalDurationMs));
@@ -107,4 +108,44 @@ class Timing
             String.format(Locale.ENGLISH, numberFormat, ms);
         return String.format("%10s", numberString);
     }
+    
+    /**
+     * Print a formatted string representation of the given timings
+     * to the standard output
+     * 
+     * @param timings The Timings
+     */
+    static void print(Iterable<? extends Timing> timings)
+    {
+        System.out.println(createString(timings));
+    }
+    
+    /**
+     * Create a formatted string representation of the given timings
+     * 
+     * @param timings The timings
+     * @return The string
+     */
+    private static String createString(Iterable<? extends Timing> timings)
+    {
+        int maxNameLength = -1;
+        for (Timing timing : timings)
+        {
+            maxNameLength = Math.max(maxNameLength, timing.getName().length());
+        }
+        int columnWidth = 10;
+        StringBuilder sb = new StringBuilder();
+        sb.append(String.format("%-" + maxNameLength + "s ", "Name"));
+        sb.append(String.format("%" + columnWidth + "s", "Host"));
+        sb.append(String.format("%" + columnWidth + "s", "Dev."));
+        sb.append(String.format("%" + columnWidth + "s", "Dev.Tot."));
+        sb.append("\n");
+        for (Timing timing : timings)
+        {
+            sb.append(timing.createString(maxNameLength));
+            sb.append("\n");
+        }
+        return sb.toString();
+    }
+    
 }

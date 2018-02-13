@@ -2,7 +2,7 @@
  * JCudaVec - Vector operations for JCuda 
  * http://www.jcuda.org
  *
- * Copyright (c) 2013-2015 Marco Hutter - http://www.jcuda.org
+ * Copyright (c) 2013-2018 Marco Hutter - http://www.jcuda.org
  * 
  * Permission is hereby granted, free of charge, to any person
  * obtaining a copy of this software and associated documentation
@@ -35,7 +35,6 @@ import java.util.LinkedHashSet;
 import java.util.Set;
 
 import jcuda.Pointer;
-import jcuda.driver.CUdeviceptr;
 
 /**
  * A test that simply calls all vector operation methods of the JCudaVec
@@ -44,15 +43,22 @@ import jcuda.driver.CUdeviceptr;
  */
 public class VecCaller
 {
+    /**
+     * Calls all declared methods in the given class
+     *  
+     * @param c The class
+     * @return Whether the calls succeeded 
+     */
     static boolean testCalls(Class<?> c)
     {
         final boolean verbose = false;
         final int n = 1000;
         final float scalar = 0.5f;
-        CUdeviceptr devicePointer = TestUtil.createDevicePointerDouble(n);
+        final Pointer devicePointer = TestUtil.createDevicePointerDouble(n);
+        final VecHandle handle = Vec.createHandle();
         
         Set<String> excludedMethods = new LinkedHashSet<String>(Arrays.asList(
-            "init", "shutdown", "call"
+            "call"
         ));
         
         boolean passed = true;
@@ -69,7 +75,11 @@ public class VecCaller
             Object parameters[] = new Object[parameterTypes.length];
             for (int i=0; i<parameters.length; i++)
             {
-                if (parameterTypes[i] == Pointer.class)
+                if (parameterTypes[i] == VecHandle.class)
+                {
+                    parameters[i] = handle;
+                }
+                else if (parameterTypes[i] == Pointer.class)
                 {
                     parameters[i] = devicePointer;
                 }
@@ -87,7 +97,8 @@ public class VecCaller
                 }
                 else
                 {
-                    System.err.println("Unexpected parameter type in "+method);
+                    System.err.println(
+                        "Unexpected parameter type in " + method);
                     parametersValid = false;
                     passed = false;
                 }
@@ -97,7 +108,7 @@ public class VecCaller
             {
                 if (verbose)
                 {
-                    System.out.println("Call " +method);
+                    System.out.println("Call " + method);
                 }
                 try
                 {
@@ -121,7 +132,7 @@ public class VecCaller
             }
             if (verbose)
             {
-                System.out.println("Call for "+method+" passed? "+passed);
+                System.out.println("Call for " + method + " passed? " + passed);
             }
         }
         

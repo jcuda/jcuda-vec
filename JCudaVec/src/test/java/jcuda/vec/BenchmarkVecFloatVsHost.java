@@ -2,7 +2,7 @@
  * JCudaVec - Vector operations for JCuda 
  * http://www.jcuda.org
  *
- * Copyright (c) 2013-2015 Marco Hutter - http://www.jcuda.org
+ * Copyright (c) 2013-2018 Marco Hutter - http://www.jcuda.org
  * 
  * Permission is hereby granted, free of charge, to any person
  * obtaining a copy of this software and associated documentation
@@ -27,23 +27,27 @@
  */
 package jcuda.vec;
 
+import static jcuda.driver.JCudaDriver.cuCtxSynchronize;
+
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Random;
 
-import jcuda.driver.CUdeviceptr;
-import static jcuda.driver.JCudaDriver.*;
+import jcuda.Pointer;
 
 /**
  * A simple benchmark comparing a the VecFloat operations to host operations 
  */
 public class BenchmarkVecFloatVsHost
 {
+    /**
+     * Entry point
+     * 
+     * @param args Not used
+     */
     public static void main(String[] args)
     {
-        VecFloat.init();
-        
         final int n = 10000000;
         
         AbstractCoreFloat simpleArithmeticCore = new AbstractCoreFloat(
@@ -56,10 +60,11 @@ public class BenchmarkVecFloatVsHost
             }
             
             @Override
-            protected void computeDevice(long n, CUdeviceptr result,
-                CUdeviceptr x, CUdeviceptr y, float scalar)
+            protected void computeDevice(VecHandle handle,
+                long n, Pointer result,
+                Pointer x, Pointer y, float scalar)
             {
-                VecFloat.mul(n, result, x, y);
+                VecFloat.mul(handle, n, result, x, y);
             }
         };
         
@@ -73,10 +78,11 @@ public class BenchmarkVecFloatVsHost
             }
             
             @Override
-            protected void computeDevice(long n, CUdeviceptr result,
-                CUdeviceptr x, CUdeviceptr y, float scalar)
+            protected void computeDevice(VecHandle handle,
+                long n, Pointer result,
+                Pointer x, Pointer y, float scalar)
             {
-                VecFloat.lt(n, result, x, y);
+                VecFloat.lt(handle, n, result, x, y);
             }
         };
 
@@ -90,10 +96,11 @@ public class BenchmarkVecFloatVsHost
             }
             
             @Override
-            protected void computeDevice(long n, CUdeviceptr result,
-                CUdeviceptr x, CUdeviceptr y, float scalar)
+            protected void computeDevice(VecHandle handle,
+                long n, Pointer result,
+                Pointer x, Pointer y, float scalar)
             {
-                VecFloat.pow(n, result, x, y);
+                VecFloat.pow(handle, n, result, x, y);
             }
         };
         
@@ -112,20 +119,21 @@ public class BenchmarkVecFloatVsHost
             }
             
             @Override
-            protected void computeDevice(long n, CUdeviceptr result,
-                CUdeviceptr x, CUdeviceptr y, float scalar)
+            protected void computeDevice(VecHandle handle,
+                long n, Pointer result,
+                Pointer x, Pointer y, float scalar)
             {
                 // x = cos(x);
-                VecFloat.cos(n, x, y);
+                VecFloat.cos(handle, n, x, y);
                 
                 // y = pow(y, x);
-                VecFloat.pow(n, y, y, x);
+                VecFloat.pow(handle, n, y, y, x);
 
                 //result = x + y;
-                VecFloat.add(n, result, x, y);
+                VecFloat.add(handle, n, result, x, y);
                 
                 // result = sin(result);
-                VecFloat.sin(n, result, result);
+                VecFloat.sin(handle, n, result, result);
             }
         };
         
@@ -136,39 +144,19 @@ public class BenchmarkVecFloatVsHost
             complexMathCore
         );
         List<Timing> timings = benchmark(n, cores);
-        print(timings);
-        
-        VecFloat.shutdown();
+        Timing.print(timings);
     }
 
-    private static void print(List<Timing> timings)
-    {
-        System.out.println(createString(timings));
-    }
-    
-    private static String createString(List<Timing> timings)
-    {
-        int maxNameLength = -1;
-        for (Timing timing : timings)
-        {
-            maxNameLength = Math.max(maxNameLength, timing.getName().length());
-        }
-        int columnWidth = 10;
-        StringBuilder sb = new StringBuilder();
-        sb.append(String.format("%-"+maxNameLength+"s ", "Name"));
-        sb.append(String.format("%"+columnWidth+"s", "Host"));
-        sb.append(String.format("%"+columnWidth+"s", "Dev."));
-        sb.append(String.format("%"+columnWidth+"s", "Dev.Tot."));
-        sb.append("\n");
-        for (Timing timing : timings)
-        {
-            sb.append(timing.createString(maxNameLength));
-            sb.append("\n");
-        }
-        return sb.toString();
-    }
-    
-    private static List<Timing> benchmark(int n, List<AbstractCoreFloat> cores)
+    /**
+     * Run each of the given cores with input data of the given size, 
+     * and collect the timing information
+     * 
+     * @param n The input size
+     * @param cores The cores
+     * @return The timing information
+     */
+    private static List<Timing> benchmark(
+        int n, Iterable<? extends AbstractCoreFloat> cores)
     {
         List<Timing> timings = new ArrayList<Timing>();
         for (AbstractCoreFloat core : cores)
@@ -179,6 +167,14 @@ public class BenchmarkVecFloatVsHost
         return timings;
     }
     
+    /**
+     * Perform a simple benchmark with the given core, and return  
+     * the timing information
+     * 
+     * @param n The input size
+     * @param core The core
+     * @return The timing information
+     */
     private static Timing benchmark(int n, AbstractCoreFloat core)
     {
         System.out.println("Benchmarking "+core+" with "+n+" elements");
@@ -195,14 +191,16 @@ public class BenchmarkVecFloatVsHost
         core.computeHost(n, hostResultReference, hostX, hostY, scalar);
         timing.endHost();
         
+        VecHandle handle = Vec.createHandle();
+        
         timing.startDeviceTotal();
-        CUdeviceptr deviceX = TestUtil.createDevicePointerFloat(hostX);
-        CUdeviceptr deviceY = TestUtil.createDevicePointerFloat(hostY);
-        CUdeviceptr deviceResult = TestUtil.createDevicePointerFloat(n);
+        Pointer deviceX = TestUtil.createDevicePointerFloat(hostX);
+        Pointer deviceY = TestUtil.createDevicePointerFloat(hostY);
+        Pointer deviceResult = TestUtil.createDevicePointerFloat(n);
         cuCtxSynchronize();
         
         timing.startDeviceCore();
-        core.computeDevice(n, deviceResult, deviceX, deviceY, scalar);
+        core.computeDevice(handle, n, deviceResult, deviceX, deviceY, scalar);
         cuCtxSynchronize();
         timing.endDeviceCore();
         
@@ -214,6 +212,8 @@ public class BenchmarkVecFloatVsHost
         TestUtil.freeDevicePointer(deviceResult);
         cuCtxSynchronize();
         timing.endDeviceTotal();
+        
+        Vec.destroyHandle(handle);
         
         return timing;
         

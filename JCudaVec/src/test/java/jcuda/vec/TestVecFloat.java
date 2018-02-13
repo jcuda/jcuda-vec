@@ -2,7 +2,7 @@
  * JCudaVec - Vector operations for JCuda 
  * http://www.jcuda.org
  *
- * Copyright (c) 2013-2015 Marco Hutter - http://www.jcuda.org
+ * Copyright (c) 2013-2018 Marco Hutter - http://www.jcuda.org
  * 
  * Permission is hereby granted, free of charge, to any person
  * obtaining a copy of this software and associated documentation
@@ -27,8 +27,6 @@
  */
 package jcuda.vec;
 
-import org.junit.AfterClass;
-import org.junit.BeforeClass;
 import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
 
@@ -45,20 +43,9 @@ import org.junit.runners.Suite;
     TestVecFloatComparisonScalar.class, 
     TestVecFloatMath1.class, 
     TestVecFloatMath2.class, 
+    TestVecFloatReduction.class,
 })
 public class TestVecFloat
 {
-    @BeforeClass
-    public static void init()
-    {
-        TestUtil.init();
-        VecFloat.init();
-    }    
-
-    @AfterClass
-    public static void shutdown()
-    {
-        TestUtil.shutdown();
-        VecFloat.shutdown();
-    }    
+    // Suite
 }

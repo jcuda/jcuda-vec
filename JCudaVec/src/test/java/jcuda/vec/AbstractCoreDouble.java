@@ -2,7 +2,7 @@
  * JCudaVec - Vector operations for JCuda 
  * http://www.jcuda.org
  *
- * Copyright (c) 2013-2015 Marco Hutter - http://www.jcuda.org
+ * Copyright (c) 2013-2018 Marco Hutter - http://www.jcuda.org
  * 
  * Permission is hereby granted, free of charge, to any person
  * obtaining a copy of this software and associated documentation
@@ -27,10 +27,23 @@
  */
 package jcuda.vec;
 
-import jcuda.driver.CUdeviceptr;
+import jcuda.Pointer;
 
 /**
- * The core of a test for one method of the VecDouble class
+ * The core of a test for one method of the {@link VecDouble} class. <br>
+ * <br>
+ * It contains two abstract methods that will be called by the 
+ * {@link VecDoubleCoreRunner}:
+ * <ul>
+ *   <li>
+ *     The {@link #computeHostElement} method computes a single element of 
+ *     the result vector on the host
+ *   </li>
+ *   <li>
+ *     The {@link #computeDevice} method computes the result vector on the 
+ *     device, using a call to {@link VecDouble}
+ *   </li>
+ * </ul>
  */
 abstract class AbstractCoreDouble
 {
@@ -61,7 +74,7 @@ abstract class AbstractCoreDouble
     protected void computeHost(
         long n, double result[], double x[], double y[], double scalar)
     {
-        for (int i=0; i<n; i++)
+        for (int i = 0; i < n; i++)
         {
             result[i] = computeHostElement(x[i], y[i], scalar);
         }
@@ -80,14 +93,16 @@ abstract class AbstractCoreDouble
     
     /**
      * Compute the result using the JCudaVec method
+     * 
+     * @param handle The {@link VecHandle}
      * @param n The size of the vectors
      * @param result The vector that will store the result
      * @param x The first input vector
      * @param y The second input vector
      * @param scalar The scalar
      */
-    protected abstract void computeDevice(long n, 
-        CUdeviceptr result, CUdeviceptr x, CUdeviceptr y, double scalar);
+    protected abstract void computeDevice(VecHandle handle, long n, 
+        Pointer result, Pointer x, Pointer y, double scalar);
 
     @Override
     public String toString()

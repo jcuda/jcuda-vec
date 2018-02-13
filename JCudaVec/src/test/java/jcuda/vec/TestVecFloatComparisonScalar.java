@@ -2,7 +2,7 @@
  * JCudaVec - Vector operations for JCuda 
  * http://www.jcuda.org
  *
- * Copyright (c) 2013-2015 Marco Hutter - http://www.jcuda.org
+ * Copyright (c) 2013-2018 Marco Hutter - http://www.jcuda.org
  * 
  * Permission is hereby granted, free of charge, to any person
  * obtaining a copy of this software and associated documentation
@@ -30,11 +30,12 @@ package jcuda.vec;
 
 import org.junit.Test;
 
-import jcuda.driver.CUdeviceptr;
+import jcuda.Pointer;
 
 /**
  * Tests for the vector comparison scalar methods
  */
+@SuppressWarnings("javadoc")
 public class TestVecFloatComparisonScalar extends AbstractTestVecFloat
 {
     @Test
@@ -50,10 +51,11 @@ public class TestVecFloatComparisonScalar extends AbstractTestVecFloat
             }
             
             @Override
-            protected void computeDevice(long n, CUdeviceptr result,
-                CUdeviceptr x, CUdeviceptr y, float scalar)
+            protected void computeDevice(VecHandle handle,
+                long n, Pointer result,
+                Pointer x, Pointer y, float scalar)
             {
-                VecFloat.ltScalar(n, result, x, scalar);
+                VecFloat.ltScalar(handle, n, result, x, scalar);
             }
         });
     }
@@ -71,10 +73,11 @@ public class TestVecFloatComparisonScalar extends AbstractTestVecFloat
             }
             
             @Override
-            protected void computeDevice(long n, CUdeviceptr result,
-                CUdeviceptr x, CUdeviceptr y, float scalar)
+            protected void computeDevice(VecHandle handle,
+                long n, Pointer result,
+                Pointer x, Pointer y, float scalar)
             {
-                VecFloat.lteScalar(n, result, x, scalar);
+                VecFloat.lteScalar(handle, n, result, x, scalar);
             }
         });
     }
@@ -92,10 +95,11 @@ public class TestVecFloatComparisonScalar extends AbstractTestVecFloat
             }
             
             @Override
-            protected void computeDevice(long n, CUdeviceptr result,
-                CUdeviceptr x, CUdeviceptr y, float scalar)
+            protected void computeDevice(VecHandle handle,
+                long n, Pointer result,
+                Pointer x, Pointer y, float scalar)
             {
-                VecFloat.eqScalar(n, result, x, scalar);
+                VecFloat.eqScalar(handle, n, result, x, scalar);
             }
         });
     }
@@ -113,10 +117,11 @@ public class TestVecFloatComparisonScalar extends AbstractTestVecFloat
             }
             
             @Override
-            protected void computeDevice(long n, CUdeviceptr result,
-                CUdeviceptr x, CUdeviceptr y, float scalar)
+            protected void computeDevice(VecHandle handle,
+                long n, Pointer result,
+                Pointer x, Pointer y, float scalar)
             {
-                VecFloat.gteScalar(n, result, x, scalar);
+                VecFloat.gteScalar(handle, n, result, x, scalar);
             }
         });
     }
@@ -134,10 +139,11 @@ public class TestVecFloatComparisonScalar extends AbstractTestVecFloat
             }
             
             @Override
-            protected void computeDevice(long n, CUdeviceptr result,
-                CUdeviceptr x, CUdeviceptr y, float scalar)
+            protected void computeDevice(VecHandle handle,
+                long n, Pointer result,
+                Pointer x, Pointer y, float scalar)
             {
-                VecFloat.gtScalar(n, result, x, scalar);
+                VecFloat.gtScalar(handle, n, result, x, scalar);
             }
         });
     }
@@ -156,10 +162,11 @@ public class TestVecFloatComparisonScalar extends AbstractTestVecFloat
             }
             
             @Override
-            protected void computeDevice(long n, CUdeviceptr result,
-                CUdeviceptr x, CUdeviceptr y, float scalar)
+            protected void computeDevice(VecHandle handle,
+                long n, Pointer result,
+                Pointer x, Pointer y, float scalar)
             {
-                VecFloat.neScalar(n, result, x, scalar);
+                VecFloat.neScalar(handle, n, result, x, scalar);
             }
         });
     }

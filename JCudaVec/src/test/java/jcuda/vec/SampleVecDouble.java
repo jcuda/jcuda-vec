@@ -2,46 +2,31 @@
  * JCudaVec - Vector operations for JCuda 
  * http://www.jcuda.org
  *
- * Copyright (c) 2013-2015 Marco Hutter - http://www.jcuda.org
+ * Copyright (c) 2013-2018 Marco Hutter - http://www.jcuda.org
  */
 package jcuda.vec;
 
-import static jcuda.driver.JCudaDriver.cuCtxCreate;
-import static jcuda.driver.JCudaDriver.cuDeviceGet;
-import static jcuda.driver.JCudaDriver.cuInit;
-import static jcuda.driver.JCudaDriver.cuMemAlloc;
-import static jcuda.driver.JCudaDriver.cuMemFree;
-import static jcuda.driver.JCudaDriver.cuMemcpyDtoH;
-import static jcuda.driver.JCudaDriver.cuMemcpyHtoD;
+import static jcuda.runtime.JCuda.cudaFree;
+import static jcuda.runtime.JCuda.cudaMalloc;
+import static jcuda.runtime.JCuda.cudaMemcpy;
+import static jcuda.runtime.cudaMemcpyKind.cudaMemcpyDeviceToHost;
+import static jcuda.runtime.cudaMemcpyKind.cudaMemcpyHostToDevice;
+
 import jcuda.Pointer;
 import jcuda.Sizeof;
-import jcuda.driver.CUcontext;
-import jcuda.driver.CUdevice;
-import jcuda.driver.CUdeviceptr;
-import jcuda.driver.JCudaDriver;
-import jcuda.vec.VecFloat;
 
 /**
  * A sample showing how to use the JCuda vector library
  */
 public class SampleVecDouble
 {
+    /**
+     * Entry point of this simple
+     * 
+     * @param args Not used
+     */
     public static void main(String[] args)
     {
-        // Enable exceptions and omit all subsequent error checks
-        JCudaDriver.setExceptionsEnabled(true);
-
-        // Initialize the driver and create a context for the first device.
-        cuInit(0);
-        CUdevice device = new CUdevice();
-        cuDeviceGet(device, 0);
-        CUcontext context = new CUcontext();
-        cuCtxCreate(context, 0, device);
-
-        // Afterwards, initialize the vector library, which will
-        // attach to the current context
-        VecDouble.init();
-        
         // Allocate and fill the host input data
         int n = 50000;
         double hostX[] = new double[n];
@@ -54,52 +39,58 @@ public class SampleVecDouble
 
         // Allocate the device pointers, and copy the
         // host input data to the device
-        CUdeviceptr deviceX = new CUdeviceptr();
-        cuMemAlloc(deviceX, n * Sizeof.DOUBLE);
-        cuMemcpyHtoD(deviceX, Pointer.to(hostX), n * Sizeof.DOUBLE);
+        Pointer deviceX = new Pointer();
+        cudaMalloc(deviceX, n * Sizeof.DOUBLE);
+        cudaMemcpy(deviceX, Pointer.to(hostX), 
+            n * Sizeof.DOUBLE, cudaMemcpyHostToDevice);
 
-        CUdeviceptr deviceY = new CUdeviceptr();
-        cuMemAlloc(deviceY, n * Sizeof.DOUBLE); 
-        cuMemcpyHtoD(deviceY, Pointer.to(hostY), n * Sizeof.DOUBLE);
+        Pointer deviceY = new Pointer();
+        cudaMalloc(deviceY, n * Sizeof.DOUBLE); 
+        cudaMemcpy(deviceY, Pointer.to(hostY), 
+            n * Sizeof.DOUBLE, cudaMemcpyHostToDevice);
 
-        CUdeviceptr deviceResult = new CUdeviceptr();
-        cuMemAlloc(deviceResult, n * Sizeof.DOUBLE);
+        Pointer deviceResult = new Pointer();
+        cudaMalloc(deviceResult, n * Sizeof.DOUBLE);
 
+        // Create a handle for the vector operations
+        VecHandle handle = Vec.createHandle();
+        
         // Perform the vector operations
-        VecDouble.cos(n, deviceX, deviceX);               // x = cos(x)  
-        VecDouble.mul(n, deviceX, deviceX, deviceX);      // x = x*x
-        VecDouble.sin(n, deviceY, deviceY);               // y = sin(y)
-        VecDouble.mul(n, deviceY, deviceY, deviceY);      // y = y*y
-        VecDouble.add(n, deviceResult, deviceX, deviceY); // result = x+y
+        VecDouble.cos(handle, n, deviceX, deviceX);               // x = cos(x)  
+        VecDouble.mul(handle, n, deviceX, deviceX, deviceX);      // x = x*x
+        VecDouble.sin(handle, n, deviceY, deviceY);               // y = sin(y)
+        VecDouble.mul(handle, n, deviceY, deviceY, deviceY);      // y = y*y
+        VecDouble.add(handle, n, deviceResult, deviceX, deviceY); // result = x+y
 
         // Allocate host output memory and copy the device output
         // to the host.
         double hostResult[] = new double[n];
-        cuMemcpyDtoH(Pointer.to(hostResult), deviceResult, n * Sizeof.DOUBLE);
+        cudaMemcpy(Pointer.to(hostResult), deviceResult, 
+            n * Sizeof.DOUBLE, cudaMemcpyDeviceToHost);
 
         // Verify the result
         boolean passed = true;
         for(int i = 0; i < n; i++)
         {
-            double expected = 
+            double expected = (
                 Math.cos(hostX[i])*Math.cos(hostX[i])+
-                Math.sin(hostY[i])*Math.sin(hostY[i]);
-            if (Math.abs(hostResult[i] - expected) > 1e-14)
+                Math.sin(hostY[i])*Math.sin(hostY[i]));
+            if (Math.abs(hostResult[i] - expected) > 1e-5)
             {
                 System.out.println(
-                    "At index "+i+ " found "+hostResult[i]+
-                    " but expected "+expected);
+                    "At index " + i + " found " + hostResult[i] +
+                    " but expected " + expected);
                 passed = false;
                 break;
             }
         }
-        System.out.println("Test "+(passed?"PASSED":"FAILED"));
+        System.out.println("Test " + (passed ? "PASSED" : "FAILED"));
 
         // Clean up.
-        cuMemFree(deviceX);
-        cuMemFree(deviceY);
-        cuMemFree(deviceResult);
-        VecFloat.shutdown();
+        cudaFree(deviceX);
+        cudaFree(deviceY);
+        cudaFree(deviceResult);
+        Vec.destroyHandle(handle);
     }
 
 }

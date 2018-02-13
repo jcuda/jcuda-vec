@@ -2,7 +2,7 @@
  * JCudaVec - Vector operations for JCuda 
  * http://www.jcuda.org
  *
- * Copyright (c) 2013-2015 Marco Hutter - http://www.jcuda.org
+ * Copyright (c) 2013-2018 Marco Hutter - http://www.jcuda.org
  * 
  * Permission is hereby granted, free of charge, to any person
  * obtaining a copy of this software and associated documentation
@@ -30,7 +30,7 @@ package jcuda.vec;
 
 import java.util.Random;
 
-import jcuda.driver.CUdeviceptr;
+import jcuda.Pointer;
 
 /**
  * Utility class to run an {@link AbstractCoreDouble}
@@ -55,13 +55,18 @@ class VecDoubleCoreRunner
         final double hostResultReference[] = new double[n];
         final double scalar = 0.5;
         
-        CUdeviceptr deviceX = TestUtil.createDevicePointerDouble(hostX);
-        CUdeviceptr deviceY = TestUtil.createDevicePointerDouble(hostY);
-        CUdeviceptr deviceResult = TestUtil.createDevicePointerDouble(n);
+        VecHandle handle = Vec.createHandle(); 
+        
+        Pointer deviceX = TestUtil.createDevicePointerDouble(hostX);
+        Pointer deviceY = TestUtil.createDevicePointerDouble(hostY);
+        Pointer deviceResult = TestUtil.createDevicePointerDouble(n);
         
         testCore.computeHost(n, hostResultReference, hostX, hostY, scalar);
-        testCore.computeDevice(n, deviceResult, deviceX, deviceY, scalar);
+        testCore.computeDevice(
+            handle, n, deviceResult, deviceX, deviceY, scalar);
 
+        Vec.destroyHandle(handle);
+        
         double hostResult[] = TestUtil.createHostDataDouble(deviceResult, n);
         boolean passed = TestUtil.equalDouble(
             hostResult, hostResultReference, epsilon, verbose);

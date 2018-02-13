@@ -2,7 +2,7 @@
  * JCudaVec - Vector operations for JCuda 
  * http://www.jcuda.org
  *
- * Copyright (c) 2013-2015 Marco Hutter - http://www.jcuda.org
+ * Copyright (c) 2013-2018 Marco Hutter - http://www.jcuda.org
  * 
  * Permission is hereby granted, free of charge, to any person
  * obtaining a copy of this software and associated documentation
@@ -30,7 +30,7 @@ package jcuda.vec;
 
 import org.junit.Test;
 
-import jcuda.driver.CUdeviceptr;
+import jcuda.Pointer;
 
 /*
  * NOTE: Many of these tests are commented out, because they don't
@@ -41,6 +41,7 @@ import jcuda.driver.CUdeviceptr;
 /**
  * Tests for the 1-argument vector math methods
  */
+@SuppressWarnings("javadoc")
 public class TestVecFloatMath1 extends AbstractTestVecFloat
 {
     @Test
@@ -56,10 +57,11 @@ public class TestVecFloatMath1 extends AbstractTestVecFloat
             }
              
             @Override
-            protected void computeDevice(long n, CUdeviceptr result, 
-                CUdeviceptr x, CUdeviceptr y, float scalar)
+            protected void computeDevice(VecHandle handle,
+                long n, Pointer result, 
+                Pointer x, Pointer y, float scalar)
             {
-                VecFloat.acos(n, result, x);
+                VecFloat.acos(handle, n, result, x);
             }
         });
     }
@@ -77,10 +79,10 @@ public class TestVecFloatMath1 extends AbstractTestVecFloat
 //            }
 //             
 //            @Override
-//            protected void computeDevice(CUdeviceptr result, CUdeviceptr x, 
-//                CUdeviceptr y, float scalar, long n)
+//            protected void computeDevice(Pointer result, Pointer x, 
+//                Pointer y, float scalar, long n)
 //            {
-//                VecFloat.acosh(n, result, x);
+//                VecFloat.acosh(handle, n, result, x);
 //            }
 //        });
 //    }
@@ -98,10 +100,11 @@ public class TestVecFloatMath1 extends AbstractTestVecFloat
             }
              
             @Override
-            protected void computeDevice(long n, CUdeviceptr result, 
-                CUdeviceptr x, CUdeviceptr y, float scalar)
+            protected void computeDevice(VecHandle handle,
+                long n, Pointer result, 
+                Pointer x, Pointer y, float scalar)
             {
-                VecFloat.asin(n, result, x);
+                VecFloat.asin(handle, n, result, x);
             }
         });
     }
@@ -119,10 +122,10 @@ public class TestVecFloatMath1 extends AbstractTestVecFloat
 //            }
 //             
 //            @Override
-//            protected void computeDevice(CUdeviceptr result, CUdeviceptr x, 
-//                CUdeviceptr y, float scalar, long n)
+//            protected void computeDevice(Pointer result, Pointer x, 
+//                Pointer y, float scalar, long n)
 //            {
-//                VecFloat.asinh(n, result, x);
+//                VecFloat.asinh(handle, n, result, x);
 //            }
 //        });
 //    }
@@ -140,10 +143,11 @@ public class TestVecFloatMath1 extends AbstractTestVecFloat
             }
              
             @Override
-            protected void computeDevice(long n, CUdeviceptr result, 
-                CUdeviceptr x, CUdeviceptr y, float scalar)
+            protected void computeDevice(VecHandle handle,
+                long n, Pointer result, 
+                Pointer x, Pointer y, float scalar)
             {
-                VecFloat.atan(n, result, x);
+                VecFloat.atan(handle, n, result, x);
             }
         });
     }
@@ -161,10 +165,10 @@ public class TestVecFloatMath1 extends AbstractTestVecFloat
 //            }
 //             
 //            @Override
-//            protected void computeDevice(CUdeviceptr result, CUdeviceptr x, 
-//                CUdeviceptr y, float scalar, long n)
+//            protected void computeDevice(Pointer result, Pointer x, 
+//                Pointer y, float scalar, long n)
 //            {
-//                VecFloat.atanh(n, result, x);
+//                VecFloat.atanh(handle, n, result, x);
 //            }
 //        });
 //    }
@@ -182,10 +186,11 @@ public class TestVecFloatMath1 extends AbstractTestVecFloat
             }
              
             @Override
-            protected void computeDevice(long n, CUdeviceptr result, 
-                CUdeviceptr x, CUdeviceptr y, float scalar)
+            protected void computeDevice(VecHandle handle,
+                long n, Pointer result, 
+                Pointer x, Pointer y, float scalar)
             {
-                VecFloat.cbrt(n, result, x);
+                VecFloat.cbrt(handle, n, result, x);
             }
         });
     }
@@ -203,10 +208,11 @@ public class TestVecFloatMath1 extends AbstractTestVecFloat
             }
              
             @Override
-            protected void computeDevice(long n, CUdeviceptr result, 
-                CUdeviceptr x, CUdeviceptr y, float scalar)
+            protected void computeDevice(VecHandle handle,
+                long n, Pointer result, 
+                Pointer x, Pointer y, float scalar)
             {
-                VecFloat.ceil(n, result, x);
+                VecFloat.ceil(handle, n, result, x);
             }
         });
     }
@@ -224,10 +230,11 @@ public class TestVecFloatMath1 extends AbstractTestVecFloat
             }
              
             @Override
-            protected void computeDevice(long n, CUdeviceptr result, 
-                CUdeviceptr x, CUdeviceptr y, float scalar)
+            protected void computeDevice(VecHandle handle,
+                long n, Pointer result, 
+                Pointer x, Pointer y, float scalar)
             {
-                VecFloat.cos(n, result, x);
+                VecFloat.cos(handle, n, result, x);
             }
         });
     }
@@ -245,10 +252,11 @@ public class TestVecFloatMath1 extends AbstractTestVecFloat
             }
              
             @Override
-            protected void computeDevice(long n, CUdeviceptr result, 
-                CUdeviceptr x, CUdeviceptr y, float scalar)
+            protected void computeDevice(VecHandle handle,
+                long n, Pointer result, 
+                Pointer x, Pointer y, float scalar)
             {
-                VecFloat.cosh(n, result, x);
+                VecFloat.cosh(handle, n, result, x);
             }
         });
     }
@@ -266,10 +274,11 @@ public class TestVecFloatMath1 extends AbstractTestVecFloat
             }
              
             @Override
-            protected void computeDevice(long n, CUdeviceptr result, 
-                CUdeviceptr x, CUdeviceptr y, float scalar)
+            protected void computeDevice(VecHandle handle,
+                long n, Pointer result, 
+                Pointer x, Pointer y, float scalar)
             {
-                VecFloat.cospi(n, result, x);
+                VecFloat.cospi(handle, n, result, x);
             }
         });
     }
@@ -287,10 +296,10 @@ public class TestVecFloatMath1 extends AbstractTestVecFloat
 //            }
 //             
 //            @Override
-//            protected void computeDevice(CUdeviceptr result, CUdeviceptr x, 
-//                CUdeviceptr y, float scalar, long n)
+//            protected void computeDevice(Pointer result, Pointer x, 
+//                Pointer y, float scalar, long n)
 //            {
-//                VecFloat.erfc(n, result, x);
+//                VecFloat.erfc(handle, n, result, x);
 //            }
 //        });
 //    }
@@ -308,10 +317,10 @@ public class TestVecFloatMath1 extends AbstractTestVecFloat
 //            }
 //             
 //            @Override
-//            protected void computeDevice(CUdeviceptr result, CUdeviceptr x, 
-//                CUdeviceptr y, float scalar, long n)
+//            protected void computeDevice(Pointer result, Pointer x, 
+//                Pointer y, float scalar, long n)
 //            {
-//                VecFloat.erfcinv(n, result, x);
+//                VecFloat.erfcinv(handle, n, result, x);
 //            }
 //        });
 //    }
@@ -329,10 +338,10 @@ public class TestVecFloatMath1 extends AbstractTestVecFloat
 //            }
 //             
 //            @Override
-//            protected void computeDevice(CUdeviceptr result, CUdeviceptr x, 
-//                CUdeviceptr y, float scalar, long n)
+//            protected void computeDevice(Pointer result, Pointer x, 
+//                Pointer y, float scalar, long n)
 //            {
-//                VecFloat.erfcx(n, result, x);
+//                VecFloat.erfcx(handle, n, result, x);
 //            }
 //        });
 //    }
@@ -350,10 +359,10 @@ public class TestVecFloatMath1 extends AbstractTestVecFloat
 //            }
 //             
 //            @Override
-//            protected void computeDevice(CUdeviceptr result, CUdeviceptr x, 
-//                CUdeviceptr y, float scalar, long n)
+//            protected void computeDevice(Pointer result, Pointer x, 
+//                Pointer y, float scalar, long n)
 //            {
-//                VecFloat.erf(n, result, x);
+//                VecFloat.erf(handle, n, result, x);
 //            }
 //        });
 //    }
@@ -371,10 +380,10 @@ public class TestVecFloatMath1 extends AbstractTestVecFloat
 //            }
 //             
 //            @Override
-//            protected void computeDevice(CUdeviceptr result, CUdeviceptr x, 
-//                CUdeviceptr y, float scalar, long n)
+//            protected void computeDevice(Pointer result, Pointer x, 
+//                Pointer y, float scalar, long n)
 //            {
-//                VecFloat.erfinv(n, result, x);
+//                VecFloat.erfinv(handle, n, result, x);
 //            }
 //        });
 //    }
@@ -392,10 +401,10 @@ public class TestVecFloatMath1 extends AbstractTestVecFloat
 //            }
 //             
 //            @Override
-//            protected void computeDevice(CUdeviceptr result, CUdeviceptr x, 
-//                CUdeviceptr y, float scalar, long n)
+//            protected void computeDevice(Pointer result, Pointer x, 
+//                Pointer y, float scalar, long n)
 //            {
-//                VecFloat.exp10(n, result, x);
+//                VecFloat.exp10(handle, n, result, x);
 //            }
 //        });
 //    }
@@ -413,10 +422,10 @@ public class TestVecFloatMath1 extends AbstractTestVecFloat
 //            }
 //             
 //            @Override
-//            protected void computeDevice(CUdeviceptr result, CUdeviceptr x, 
-//                CUdeviceptr y, float scalar, long n)
+//            protected void computeDevice(Pointer result, Pointer x, 
+//                Pointer y, float scalar, long n)
 //            {
-//                VecFloat.exp2(n, result, x);
+//                VecFloat.exp2(handle, n, result, x);
 //            }
 //        });
 //    }
@@ -434,10 +443,11 @@ public class TestVecFloatMath1 extends AbstractTestVecFloat
             }
              
             @Override
-            protected void computeDevice(long n, CUdeviceptr result, 
-                CUdeviceptr x, CUdeviceptr y, float scalar)
+            protected void computeDevice(VecHandle handle,
+                long n, Pointer result, 
+                Pointer x, Pointer y, float scalar)
             {
-                VecFloat.exp(n, result, x);
+                VecFloat.exp(handle, n, result, x);
             }
         });
     }
@@ -455,10 +465,11 @@ public class TestVecFloatMath1 extends AbstractTestVecFloat
             }
              
             @Override
-            protected void computeDevice(long n, CUdeviceptr result, 
-                CUdeviceptr x, CUdeviceptr y, float scalar)
+            protected void computeDevice(VecHandle handle,
+                long n, Pointer result, 
+                Pointer x, Pointer y, float scalar)
             {
-                VecFloat.expm1(n, result, x);
+                VecFloat.expm1(handle, n, result, x);
             }
         });
     }
@@ -476,10 +487,11 @@ public class TestVecFloatMath1 extends AbstractTestVecFloat
             }
              
             @Override
-            protected void computeDevice(long n, CUdeviceptr result, 
-                CUdeviceptr x, CUdeviceptr y, float scalar)
+            protected void computeDevice(VecHandle handle,
+                long n, Pointer result, 
+                Pointer x, Pointer y, float scalar)
             {
-                VecFloat.fabs(n, result, x);
+                VecFloat.fabs(handle, n, result, x);
             }
         });
     }
@@ -497,10 +509,11 @@ public class TestVecFloatMath1 extends AbstractTestVecFloat
             }
              
             @Override
-            protected void computeDevice(long n, CUdeviceptr result, 
-                CUdeviceptr x, CUdeviceptr y, float scalar)
+            protected void computeDevice(VecHandle handle,
+                long n, Pointer result, 
+                Pointer x, Pointer y, float scalar)
             {
-                VecFloat.floor(n, result, x);
+                VecFloat.floor(handle, n, result, x);
             }
         });
     }
@@ -518,10 +531,10 @@ public class TestVecFloatMath1 extends AbstractTestVecFloat
 //            }
 //             
 //            @Override
-//            protected void computeDevice(CUdeviceptr result, CUdeviceptr x, 
-//                CUdeviceptr y, float scalar, long n)
+//            protected void computeDevice(Pointer result, Pointer x, 
+//                Pointer y, float scalar, long n)
 //            {
-//                VecFloat.j0(n, result, x);
+//                VecFloat.j0(handle, n, result, x);
 //            }
 //        });
 //    }
@@ -539,10 +552,10 @@ public class TestVecFloatMath1 extends AbstractTestVecFloat
 //            }
 //             
 //            @Override
-//            protected void computeDevice(CUdeviceptr result, CUdeviceptr x, 
-//                CUdeviceptr y, float scalar, long n)
+//            protected void computeDevice(Pointer result, Pointer x, 
+//                Pointer y, float scalar, long n)
 //            {
-//                VecFloat.j1(n, result, x);
+//                VecFloat.j1(handle, n, result, x);
 //            }
 //        });
 //    }
@@ -560,10 +573,10 @@ public class TestVecFloatMath1 extends AbstractTestVecFloat
 //            }
 //             
 //            @Override
-//            protected void computeDevice(CUdeviceptr result, CUdeviceptr x, 
-//                CUdeviceptr y, float scalar, long n)
+//            protected void computeDevice(Pointer result, Pointer x, 
+//                Pointer y, float scalar, long n)
 //            {
-//                VecFloat.lgamma(n, result, x);
+//                VecFloat.lgamma(handle, n, result, x);
 //            }
 //        });
 //    }
@@ -581,10 +594,11 @@ public class TestVecFloatMath1 extends AbstractTestVecFloat
             }
              
             @Override
-            protected void computeDevice(long n, CUdeviceptr result, 
-                CUdeviceptr x, CUdeviceptr y, float scalar)
+            protected void computeDevice(VecHandle handle,
+                long n, Pointer result, 
+                Pointer x, Pointer y, float scalar)
             {
-                VecFloat.log10(n, result, x);
+                VecFloat.log10(handle, n, result, x);
             }
         });
     }
@@ -602,10 +616,11 @@ public class TestVecFloatMath1 extends AbstractTestVecFloat
             }
              
             @Override
-            protected void computeDevice(long n, CUdeviceptr result, 
-                CUdeviceptr x, CUdeviceptr y, float scalar)
+            protected void computeDevice(VecHandle handle,
+                long n, Pointer result, 
+                Pointer x, Pointer y, float scalar)
             {
-                VecFloat.log1p(n, result, x);
+                VecFloat.log1p(handle, n, result, x);
             }
         });
     }
@@ -623,10 +638,11 @@ public class TestVecFloatMath1 extends AbstractTestVecFloat
             }
              
             @Override
-            protected void computeDevice(long n, CUdeviceptr result, 
-                CUdeviceptr x, CUdeviceptr y, float scalar)
+            protected void computeDevice(VecHandle handle,
+                long n, Pointer result, 
+                Pointer x, Pointer y, float scalar)
             {
-                VecFloat.log2(n, result, x);
+                VecFloat.log2(handle, n, result, x);
             }
         });
     }
@@ -644,10 +660,10 @@ public class TestVecFloatMath1 extends AbstractTestVecFloat
 //            }
 //             
 //            @Override
-//            protected void computeDevice(CUdeviceptr result, CUdeviceptr x, 
-//                CUdeviceptr y, float scalar, long n)
+//            protected void computeDevice(Pointer result, Pointer x, 
+//                Pointer y, float scalar, long n)
 //            {
-//                VecFloat.logb(n, result, x);
+//                VecFloat.logb(handle, n, result, x);
 //            }
 //        });
 //    }
@@ -665,10 +681,11 @@ public class TestVecFloatMath1 extends AbstractTestVecFloat
             }
              
             @Override
-            protected void computeDevice(long n, CUdeviceptr result, 
-                CUdeviceptr x, CUdeviceptr y, float scalar)
+            protected void computeDevice(VecHandle handle,
+                long n, Pointer result, 
+                Pointer x, Pointer y, float scalar)
             {
-                VecFloat.log(n, result, x);
+                VecFloat.log(handle, n, result, x);
             }
         });
     }
@@ -686,10 +703,10 @@ public class TestVecFloatMath1 extends AbstractTestVecFloat
 //            }
 //             
 //            @Override
-//            protected void computeDevice(CUdeviceptr result, CUdeviceptr x, 
-//                CUdeviceptr y, float scalar, long n)
+//            protected void computeDevice(Pointer result, Pointer x, 
+//                Pointer y, float scalar, long n)
 //            {
-//                VecFloat.normcdf(n, result, x);
+//                VecFloat.normcdf(handle, n, result, x);
 //            }
 //        });
 //    }
@@ -707,10 +724,10 @@ public class TestVecFloatMath1 extends AbstractTestVecFloat
 //            }
 //             
 //            @Override
-//            protected void computeDevice(CUdeviceptr result, CUdeviceptr x, 
-//                CUdeviceptr y, float scalar, long n)
+//            protected void computeDevice(Pointer result, Pointer x, 
+//                Pointer y, float scalar, long n)
 //            {
-//                VecFloat.normcdfinv(n, result, x);
+//                VecFloat.normcdfinv(handle, n, result, x);
 //            }
 //        });
 //    }
@@ -728,10 +745,10 @@ public class TestVecFloatMath1 extends AbstractTestVecFloat
 //            }
 //             
 //            @Override
-//            protected void computeDevice(CUdeviceptr result, CUdeviceptr x, 
-//                CUdeviceptr y, float scalar, long n)
+//            protected void computeDevice(Pointer result, Pointer x, 
+//                Pointer y, float scalar, long n)
 //            {
-//                VecFloat.rcbrt(n, result, x);
+//                VecFloat.rcbrt(handle, n, result, x);
 //            }
 //        });
 //    }
@@ -749,10 +766,11 @@ public class TestVecFloatMath1 extends AbstractTestVecFloat
             }
              
             @Override
-            protected void computeDevice(long n, CUdeviceptr result, 
-                CUdeviceptr x, CUdeviceptr y, float scalar)
+            protected void computeDevice(VecHandle handle,
+                long n, Pointer result, 
+                Pointer x, Pointer y, float scalar)
             {
-                VecFloat.rint(n, result, x);
+                VecFloat.rint(handle, n, result, x);
             }
         });
     }
@@ -770,10 +788,11 @@ public class TestVecFloatMath1 extends AbstractTestVecFloat
             }
              
             @Override
-            protected void computeDevice(long n, CUdeviceptr result, 
-                CUdeviceptr x, CUdeviceptr y, float scalar)
+            protected void computeDevice(VecHandle handle,
+                long n, Pointer result, 
+                Pointer x, Pointer y, float scalar)
             {
-                VecFloat.round(n, result, x);
+                VecFloat.round(handle, n, result, x);
             }
         });
     }
@@ -791,10 +810,11 @@ public class TestVecFloatMath1 extends AbstractTestVecFloat
             }
              
             @Override
-            protected void computeDevice(long n, CUdeviceptr result, 
-                CUdeviceptr x, CUdeviceptr y, float scalar)
+            protected void computeDevice(VecHandle handle,
+                long n, Pointer result, 
+                Pointer x, Pointer y, float scalar)
             {
-                VecFloat.rsqrt(n, result, x);
+                VecFloat.rsqrt(handle, n, result, x);
             }
         });
     }
@@ -812,10 +832,11 @@ public class TestVecFloatMath1 extends AbstractTestVecFloat
             }
              
             @Override
-            protected void computeDevice(long n, CUdeviceptr result, 
-                CUdeviceptr x, CUdeviceptr y, float scalar)
+            protected void computeDevice(VecHandle handle,
+                long n, Pointer result, 
+                Pointer x, Pointer y, float scalar)
             {
-                VecFloat.sin(n, result, x);
+                VecFloat.sin(handle, n, result, x);
             }
         });
     }
@@ -833,10 +854,11 @@ public class TestVecFloatMath1 extends AbstractTestVecFloat
             }
              
             @Override
-            protected void computeDevice(long n, CUdeviceptr result, 
-                CUdeviceptr x, CUdeviceptr y, float scalar)
+            protected void computeDevice(VecHandle handle,
+                long n, Pointer result, 
+                Pointer x, Pointer y, float scalar)
             {
-                VecFloat.sinh(n, result, x);
+                VecFloat.sinh(handle, n, result, x);
             }
         });
     }
@@ -854,10 +876,11 @@ public class TestVecFloatMath1 extends AbstractTestVecFloat
             }
              
             @Override
-            protected void computeDevice(long n, CUdeviceptr result, 
-                CUdeviceptr x, CUdeviceptr y, float scalar)
+            protected void computeDevice(VecHandle handle,
+                long n, Pointer result, 
+                Pointer x, Pointer y, float scalar)
             {
-                VecFloat.sinpi(n, result, x);
+                VecFloat.sinpi(handle, n, result, x);
             }
         });
     }
@@ -875,10 +898,11 @@ public class TestVecFloatMath1 extends AbstractTestVecFloat
             }
              
             @Override
-            protected void computeDevice(long n, CUdeviceptr result, 
-                CUdeviceptr x, CUdeviceptr y, float scalar)
+            protected void computeDevice(VecHandle handle,
+                long n, Pointer result, 
+                Pointer x, Pointer y, float scalar)
             {
-                VecFloat.sqrt(n, result, x);
+                VecFloat.sqrt(handle, n, result, x);
             }
         });
     }
@@ -896,10 +920,11 @@ public class TestVecFloatMath1 extends AbstractTestVecFloat
             }
              
             @Override
-            protected void computeDevice(long n, CUdeviceptr result, 
-                CUdeviceptr x, CUdeviceptr y, float scalar)
+            protected void computeDevice(VecHandle handle,
+                long n, Pointer result, 
+                Pointer x, Pointer y, float scalar)
             {
-                VecFloat.tan(n, result, x);
+                VecFloat.tan(handle, n, result, x);
             }
         });
     }
@@ -917,10 +942,11 @@ public class TestVecFloatMath1 extends AbstractTestVecFloat
             }
              
             @Override
-            protected void computeDevice(long n, CUdeviceptr result, 
-                CUdeviceptr x, CUdeviceptr y, float scalar)
+            protected void computeDevice(VecHandle handle,
+                long n, Pointer result, 
+                Pointer x, Pointer y, float scalar)
             {
-                VecFloat.tanh(n, result, x);
+                VecFloat.tanh(handle, n, result, x);
             }
         });
     }
@@ -938,10 +964,10 @@ public class TestVecFloatMath1 extends AbstractTestVecFloat
 //            }
 //             
 //            @Override
-//            protected void computeDevice(CUdeviceptr result, CUdeviceptr x, 
-//                CUdeviceptr y, float scalar, long n)
+//            protected void computeDevice(Pointer result, Pointer x, 
+//                Pointer y, float scalar, long n)
 //            {
-//                VecFloat.tgamma(n, result, x);
+//                VecFloat.tgamma(handle, n, result, x);
 //            }
 //        });
 //    }
@@ -959,10 +985,11 @@ public class TestVecFloatMath1 extends AbstractTestVecFloat
             }
              
             @Override
-            protected void computeDevice(long n, CUdeviceptr result, 
-                CUdeviceptr x, CUdeviceptr y, float scalar)
+            protected void computeDevice(VecHandle handle,
+                long n, Pointer result, 
+                Pointer x, Pointer y, float scalar)
             {
-                VecFloat.trunc(n, result, x);
+                VecFloat.trunc(handle, n, result, x);
             }
         });
     }
@@ -980,10 +1007,10 @@ public class TestVecFloatMath1 extends AbstractTestVecFloat
 //            }
 //             
 //            @Override
-//            protected void computeDevice(CUdeviceptr result, CUdeviceptr x, 
-//                CUdeviceptr y, float scalar, long n)
+//            protected void computeDevice(Pointer result, Pointer x, 
+//                Pointer y, float scalar, long n)
 //            {
-//                VecFloat.y0(n, result, x);
+//                VecFloat.y0(handle, n, result, x);
 //            }
 //        });
 //    }
@@ -1001,10 +1028,10 @@ public class TestVecFloatMath1 extends AbstractTestVecFloat
 //            }
 //             
 //            @Override
-//            protected void computeDevice(CUdeviceptr result, CUdeviceptr x, 
-//                CUdeviceptr y, float scalar, long n)
+//            protected void computeDevice(Pointer result, Pointer x, 
+//                Pointer y, float scalar, long n)
 //            {
-//                VecFloat.y1(n, result, x);
+//                VecFloat.y1(handle, n, result, x);
 //            }
 //        });
 //    }

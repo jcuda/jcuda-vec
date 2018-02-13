@@ -2,7 +2,7 @@
  * JCudaVec - Vector operations for JCuda 
  * http://www.jcuda.org
  *
- * Copyright (c) 2013-2015 Marco Hutter - http://www.jcuda.org
+ * Copyright (c) 2013-2018 Marco Hutter - http://www.jcuda.org
  * 
  * Permission is hereby granted, free of charge, to any person
  * obtaining a copy of this software and associated documentation
@@ -28,111 +28,22 @@
 
 package jcuda.vec;
 
-import static jcuda.driver.JCudaDriver.cuCtxCreate;
-import static jcuda.driver.JCudaDriver.cuCtxGetCurrent;
-import static jcuda.driver.JCudaDriver.cuCtxSynchronize;
-import static jcuda.driver.JCudaDriver.cuDeviceGet;
-import static jcuda.driver.JCudaDriver.cuInit;
-import static jcuda.driver.JCudaDriver.cuMemAlloc;
-import static jcuda.driver.JCudaDriver.cuMemFree;
-import static jcuda.driver.JCudaDriver.cuMemcpyDtoH;
-import static jcuda.driver.JCudaDriver.cuMemcpyHtoD;
+import static jcuda.runtime.JCuda.cudaFree;
+import static jcuda.runtime.JCuda.cudaMalloc;
+import static jcuda.runtime.JCuda.cudaMemcpy;
+import static jcuda.runtime.cudaMemcpyKind.cudaMemcpyDeviceToHost;
+import static jcuda.runtime.cudaMemcpyKind.cudaMemcpyHostToDevice;
 
 import java.util.Random;
 
-import jcuda.CudaException;
 import jcuda.Pointer;
 import jcuda.Sizeof;
-import jcuda.driver.CUcontext;
-import jcuda.driver.CUdevice;
-import jcuda.driver.CUdeviceptr;
-import jcuda.driver.CUresult;
 
 /**
  * Utility for the JCudaVec tests
  */
 public class TestUtil
 {
-    /**
-     * The CUDA context that is created in {@link #init()} and 
-     * from which the calling thread is detached in
-     * {@link #shutdown()}
-     */
-    private static CUcontext context;
-    
-    /**
-     * The default device number
-     */
-    private static int deviceNumber = 0;
-    
-    /**
-     * Initializes the JCuda driver API. Then it will try to attach to the 
-     * current CUDA context. If no active CUDA context exists, then it will 
-     * try to create one, for the device which is specified by the current 
-     * deviceNumber.
-     * 
-     * @throws CudaException If it is neither possible to 
-     * attach to an existing context, nor to create a new
-     * context.
-     */
-    public static void init()
-    {
-        checkResult(cuInit(0));
-
-        // Try to obtain the current context
-        CUcontext context = new CUcontext();
-        checkResult(cuCtxGetCurrent(context));
-        
-        // If the context is 'null', then a new context
-        // has to be created.
-        CUcontext nullContext = new CUcontext(); 
-        if (context.equals(nullContext))
-        {
-            createContext();
-        }
-    }
-    
-    /**
-     * Tries to create a context for device 'deviceNumber'.
-     * 
-     * @throws CudaException If the device can not be 
-     * accessed or the context can not be created
-     */
-    private static void createContext()
-    {
-        CUdevice device = new CUdevice();
-        checkResult(cuDeviceGet(device, deviceNumber));
-        CUcontext context = new CUcontext();
-        checkResult(cuCtxCreate(context, 0, device));
-    }
-    
-    /**
-     * If the given result is not CUresult.CUDA_SUCCESS, then this method
-     * throws a CudaException with the error message for the given result.
-     * 
-     * @param cuResult The result
-     * @throws CudaException if the result is not CUresult.CUDA_SUCCESS
-     */
-    private static void checkResult(int cuResult)
-    {
-        if (cuResult != CUresult.CUDA_SUCCESS)
-        {
-            throw new CudaException(CUresult.stringFor(cuResult));
-        }
-    }
-    
-    /**
-     * Shut down and destroy the current CUDA context
-     */
-    static void shutdown()
-    {
-        if (context != null)
-        {
-            cuCtxSynchronize();
-            context = null;
-        }
-    }
-
     /**
      * Creates an array containing random values between 0 and 1.
      * 
@@ -170,7 +81,7 @@ public class TestUtil
         int n, float min, float max, Random random)
     {
         float result[] = new float[n];
-        for (int i=0; i<n; i++)
+        for (int i = 0; i < n; i++)
         {
             result[i] = min + random.nextFloat() * (max - min);
         }
@@ -190,7 +101,7 @@ public class TestUtil
         int n, double min, double max, Random random)
     {
         double result[] = new double[n];
-        for (int i=0; i<n; i++)
+        for (int i = 0; i < n; i++)
         {
             result[i] = min + random.nextDouble() * (max - min);
         }
@@ -204,7 +115,7 @@ public class TestUtil
      * @param n The number of elements
      * @return The new pointer
      */
-    static CUdeviceptr createDevicePointerFloat(int n)
+    static Pointer createDevicePointerFloat(int n)
     {
         return createDevicePointerFloat(new float[n]);
     }
@@ -216,7 +127,7 @@ public class TestUtil
      * @param n The number of elements
      * @return The new pointer
      */
-    static CUdeviceptr createDevicePointerDouble(int n)
+    static Pointer createDevicePointerDouble(int n)
     {
         return createDevicePointerDouble(new double[n]);
     }
@@ -228,12 +139,12 @@ public class TestUtil
      * @param hostData The host data
      * @return The device pointer
      */
-    static CUdeviceptr createDevicePointerFloat(float hostData[])
+    static Pointer createDevicePointerFloat(float hostData[])
     {
-        CUdeviceptr devicePointer = new CUdeviceptr();
-        cuMemAlloc(devicePointer, hostData.length * Sizeof.FLOAT);
-        cuMemcpyHtoD(devicePointer, Pointer.to(hostData),
-            hostData.length * Sizeof.FLOAT);
+        Pointer devicePointer = new Pointer();
+        cudaMalloc(devicePointer, hostData.length * Sizeof.FLOAT);
+        cudaMemcpy(devicePointer, Pointer.to(hostData),
+            hostData.length * Sizeof.FLOAT, cudaMemcpyHostToDevice);
         return devicePointer;
     }
 
@@ -244,12 +155,12 @@ public class TestUtil
      * @param hostData The host data
      * @return The device pointer
      */
-    static CUdeviceptr createDevicePointerDouble(double hostData[])
+    static Pointer createDevicePointerDouble(double hostData[])
     {
-        CUdeviceptr devicePointer = new CUdeviceptr();
-        cuMemAlloc(devicePointer, hostData.length * Sizeof.DOUBLE);
-        cuMemcpyHtoD(devicePointer, Pointer.to(hostData),
-            hostData.length * Sizeof.DOUBLE);
+        Pointer devicePointer = new Pointer();
+        cudaMalloc(devicePointer, hostData.length * Sizeof.DOUBLE);
+        cudaMemcpy(devicePointer, Pointer.to(hostData),
+            hostData.length * Sizeof.DOUBLE, cudaMemcpyHostToDevice);
         return devicePointer;
     }
 
@@ -260,10 +171,11 @@ public class TestUtil
      * @param n The size of the data block, in number of elements 
      * @return The array
      */
-    static float[] createHostDataFloat(CUdeviceptr devicePointer, int n)
+    static float[] createHostDataFloat(Pointer devicePointer, int n)
     {
         float hostData[] = new float[n];
-        cuMemcpyDtoH(Pointer.to(hostData), devicePointer, n * Sizeof.FLOAT);
+        cudaMemcpy(Pointer.to(hostData), devicePointer,
+            hostData.length * Sizeof.FLOAT, cudaMemcpyDeviceToHost);
         return hostData;
     }
     
@@ -274,10 +186,11 @@ public class TestUtil
      * @param n The size of the data block, in number of elements 
      * @return The array
      */
-    static double[] createHostDataDouble(CUdeviceptr devicePointer, int n)
+    static double[] createHostDataDouble(Pointer devicePointer, int n)
     {
         double hostData[] = new double[n];
-        cuMemcpyDtoH(Pointer.to(hostData), devicePointer, n * Sizeof.DOUBLE);
+        cudaMemcpy(Pointer.to(hostData), devicePointer,
+            hostData.length * Sizeof.DOUBLE, cudaMemcpyDeviceToHost);
         return hostData;
     }
     
@@ -286,9 +199,9 @@ public class TestUtil
      * 
      * @param devicePointer The device pointer
      */
-    static void freeDevicePointer(CUdeviceptr devicePointer)
+    static void freeDevicePointer(Pointer devicePointer)
     {
-        cuMemFree(devicePointer);
+        cudaFree(devicePointer);
     }
 
     /**
@@ -375,7 +288,6 @@ public class TestUtil
         return passed;
     }
     
-
     /**
      * Private constructor to prevent instantiation
      */

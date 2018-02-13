@@ -2,7 +2,7 @@
  * JCudaVec - Vector operations for JCuda 
  * http://www.jcuda.org
  *
- * Copyright (c) 2013-2015 Marco Hutter - http://www.jcuda.org
+ * Copyright (c) 2013-2018 Marco Hutter - http://www.jcuda.org
  * 
  * Permission is hereby granted, free of charge, to any person
  * obtaining a copy of this software and associated documentation
@@ -35,7 +35,6 @@ import static jcuda.driver.JCudaDriver.cuModuleLoad;
 import java.util.Random;
 
 import jcuda.Pointer;
-import jcuda.driver.CUdeviceptr;
 import jcuda.driver.CUfunction;
 import jcuda.driver.CUmodule;
 import jcuda.driver.JCudaDriver;
@@ -46,10 +45,14 @@ import jcuda.driver.JCudaDriver;
  */
 public class BenchmarkVecDoubleVsOwnKernel
 {
+    /**
+     * Entry point 
+     * 
+     * @param args Not used
+     */
     public static void main(String[] args)
     {
         JCudaDriver.setExceptionsEnabled(true);
-        VecDouble.init();
         
         final int runs = 1000;
         for (int n=1000; n<=10000000; n*=10)
@@ -57,26 +60,30 @@ public class BenchmarkVecDoubleVsOwnKernel
             runTest(n, runs);
         }
         
-        VecDouble.shutdown();
-        
         System.out.println("Done");
     }
     
+    /**
+     * Run a benchmark with the given number of elements and runs
+     * 
+     * @param n The number of elements
+     * @param runs The number of runs
+     */
     private static void runTest(int n, int runs)
     {
-        System.out.println("Bencharking "+n+" elements, "+runs+" runs");
+        System.out.println("Bencharking " + n + " elements, " + runs + " runs");
         
         // Set up the input data
         final Random random = new Random(0);
         final double hostX[] = TestUtil.createRandomHostDataDouble(n, random);
-        CUdeviceptr deviceX = TestUtil.createDevicePointerDouble(hostX);
+        Pointer deviceX = TestUtil.createDevicePointerDouble(hostX);
 
         // Perform the computation using the vector library
-        Timing timingVec = new Timing(n+" elements, "+runs+" runs, vec");
+        Timing timingVec = new Timing(n + " elements, " + runs + " runs, vec");
         double hostResultVec[] = runVec(n, deviceX, runs, timingVec);
 
         // Perform the computation using an own kernel
-        Timing timingOwn = new Timing(n+" elements, "+runs+" runs, own");
+        Timing timingOwn = new Timing(n + " elements, " + runs + " runs, own");
         double hostResultOwn[] = runOwn(n, deviceX, runs, timingOwn);
         
         // Compare the results
@@ -85,7 +92,7 @@ public class BenchmarkVecDoubleVsOwnKernel
         boolean passed = TestUtil.equalDouble(
             hostResultVec, hostResultOwn, epsilon, verbose);
         
-        System.out.println("Passed? "+passed);
+        System.out.println("Passed? " + passed);
         
         System.out.println(timingVec);
         System.out.println(timingOwn);
@@ -95,15 +102,25 @@ public class BenchmarkVecDoubleVsOwnKernel
         
     }
     
-    private static double[] runVec(int n, CUdeviceptr deviceX,
+    /**
+     * Run the computation using the JCudaVec library
+     * 
+     * @param n The number of elements
+     * @param deviceX The device data
+     * @param runs The number of runs
+     * @param timingVec The timing information
+     * @return The results
+     */
+    private static double[] runVec(int n, Pointer deviceX,
         int runs, Timing timingVec)
     {
-        CUdeviceptr deviceResultVec = TestUtil.createDevicePointerDouble(n);
+        Pointer deviceResultVec = TestUtil.createDevicePointerDouble(n);
+        VecHandle handle = Vec.createHandle();
 
         timingVec.startDeviceCore();
         for (int i=0; i<runs; i++)
         {
-            logistic(n, deviceResultVec, deviceX);
+            logistic(handle, n, deviceResultVec, deviceX);
             cuCtxSynchronize();
         }
         timingVec.endDeviceCore();
@@ -111,35 +128,55 @@ public class BenchmarkVecDoubleVsOwnKernel
         double hostResultVec[] = 
             TestUtil.createHostDataDouble(deviceResultVec, n);
         TestUtil.freeDevicePointer(deviceResultVec);
+        
+        Vec.destroyHandle(handle);
+        
         return hostResultVec;
     }
     
-    private static void logistic(long n, Pointer result, Pointer x)
+    /**
+     * Implementation of a logistic function using the JCudaVec library
+     * 
+     * @param handle The {@link VecHandle}
+     * @param n The number of elements
+     * @param result The result pointer
+     * @param x The input pointer
+     */
+    private static void logistic(
+        VecHandle handle, long n, Pointer result, Pointer x)
     {
         // 1 / (1 + e^(-x))
         
         // result = -x
-        VecDouble.negate(n, result, x);
+        VecDouble.negate(handle, n, result, x);
         
         // result = e^result
-        VecDouble.exp(n, result, result);
+        VecDouble.exp(handle, n, result, result);
 
         // result = result + 1
-        VecDouble.addScalar(n, result, result, 1.0f);
+        VecDouble.addScalar(handle, n, result, result, 1.0f);
         
         //result = 1 / result
-        VecDouble.scalarDiv(n, result, 1.0f, result);
+        VecDouble.scalarDiv(handle, n, result, 1.0f, result);
     }
     
-    private static double[] runOwn(int n, CUdeviceptr deviceX,
+    /**
+     * Run the computation using a dedicated, own kernel
+     * 
+     * @param n The number of elements
+     * @param deviceX The device data
+     * @param runs The number of runs
+     * @param timingOwn The timing information
+     * @return The results
+     */
+    private static double[] runOwn(int n, Pointer deviceX,
         int runs, Timing timingOwn)
     {
-        // Perform the computation using an own kernel
-        CUdeviceptr deviceResultOwn = TestUtil.createDevicePointerDouble(n);
+        Pointer deviceResultOwn = TestUtil.createDevicePointerDouble(n);
+
         CUmodule module = new CUmodule();
-        String modelString = System.getProperty("sun.arch.data.model");
         String moduleFileName = "src/test/resources/kernels/" + 
-            "LogisticFunctionKernel_double_"+modelString+"_cc30.ptx";
+            "LogisticFunctionKernel_double_64_cc30.ptx";
         cuModuleLoad(module, moduleFileName);
         CUfunction function = new CUfunction();
         cuModuleGetFunction(function, module, "logistic");

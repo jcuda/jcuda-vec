@@ -2,7 +2,7 @@
  * JCudaVec - Vector operations for JCuda 
  * http://www.jcuda.org
  *
- * Copyright (c) 2013-2015 Marco Hutter - http://www.jcuda.org
+ * Copyright (c) 2013-2018 Marco Hutter - http://www.jcuda.org
  * 
  * Permission is hereby granted, free of charge, to any person
  * obtaining a copy of this software and associated documentation
@@ -30,11 +30,12 @@ package jcuda.vec;
 
 import org.junit.Test;
 
-import jcuda.driver.CUdeviceptr;
+import jcuda.Pointer;
 
 /**
  * Tests for the 2-argument vector math methods
  */
+@SuppressWarnings("javadoc")
 public class TestVecDoubleMath2 extends AbstractTestVecDouble
 {
     @Test
@@ -50,10 +51,11 @@ public class TestVecDoubleMath2 extends AbstractTestVecDouble
             }
             
             @Override
-            protected void computeDevice(long n, CUdeviceptr result, 
-                CUdeviceptr x, CUdeviceptr y, double scalar)
+            protected void computeDevice(VecHandle handle,
+                long n, Pointer result, 
+                Pointer x, Pointer y, double scalar)
             {
-                VecDouble.copysign(n, result, x, y);
+                VecDouble.copysign(handle, n, result, x, y);
             }
         });
     }
@@ -71,10 +73,11 @@ public class TestVecDoubleMath2 extends AbstractTestVecDouble
             }
             
             @Override
-            protected void computeDevice(long n, CUdeviceptr result, 
-                CUdeviceptr x, CUdeviceptr y, double scalar)
+            protected void computeDevice(VecHandle handle,
+                long n, Pointer result, 
+                Pointer x, Pointer y, double scalar)
             {
-                VecDouble.fdim(n, result, x, y);
+                VecDouble.fdim(handle, n, result, x, y);
             }
         });
     }
@@ -92,10 +95,11 @@ public class TestVecDoubleMath2 extends AbstractTestVecDouble
             }
             
             @Override
-            protected void computeDevice(long n, CUdeviceptr result, 
-                CUdeviceptr x, CUdeviceptr y, double scalar)
+            protected void computeDevice(VecHandle handle,
+                long n, Pointer result, 
+                Pointer x, Pointer y, double scalar)
             {
-                VecDouble.fdivide(n, result, x, y);
+                VecDouble.fdivide(handle, n, result, x, y);
             }
         });
     }
@@ -113,10 +117,11 @@ public class TestVecDoubleMath2 extends AbstractTestVecDouble
             }
             
             @Override
-            protected void computeDevice(long n, CUdeviceptr result, 
-                CUdeviceptr x, CUdeviceptr y, double scalar)
+            protected void computeDevice(VecHandle handle,
+                long n, Pointer result, 
+                Pointer x, Pointer y, double scalar)
             {
-                VecDouble.fmax(n, result, x, y);
+                VecDouble.fmax(handle, n, result, x, y);
             }
         });
     }
@@ -134,10 +139,11 @@ public class TestVecDoubleMath2 extends AbstractTestVecDouble
             }
             
             @Override
-            protected void computeDevice(long n, CUdeviceptr result, 
-                CUdeviceptr x, CUdeviceptr y, double scalar)
+            protected void computeDevice(VecHandle handle,
+                long n, Pointer result, 
+                Pointer x, Pointer y, double scalar)
             {
-                VecDouble.fmin(n, result, x, y);
+                VecDouble.fmin(handle, n, result, x, y);
             }
         });
     }
@@ -155,10 +161,11 @@ public class TestVecDoubleMath2 extends AbstractTestVecDouble
             }
             
             @Override
-            protected void computeDevice(long n, CUdeviceptr result, 
-                CUdeviceptr x, CUdeviceptr y, double scalar)
+            protected void computeDevice(VecHandle handle,
+                long n, Pointer result, 
+                Pointer x, Pointer y, double scalar)
             {
-                VecDouble.fmod(n, result, x, y);
+                VecDouble.fmod(handle, n, result, x, y);
             }
         });
     }
@@ -176,10 +183,11 @@ public class TestVecDoubleMath2 extends AbstractTestVecDouble
             }
             
             @Override
-            protected void computeDevice(long n, CUdeviceptr result, 
-                CUdeviceptr x, CUdeviceptr y, double scalar)
+            protected void computeDevice(VecHandle handle,
+                long n, Pointer result, 
+                Pointer x, Pointer y, double scalar)
             {
-                VecDouble.hypot(n, result, x, y);
+                VecDouble.hypot(handle, n, result, x, y);
             }
         });
     }
@@ -197,10 +205,11 @@ public class TestVecDoubleMath2 extends AbstractTestVecDouble
             }
             
             @Override
-            protected void computeDevice(long n, CUdeviceptr result, 
-                CUdeviceptr x, CUdeviceptr y, double scalar)
+            protected void computeDevice(VecHandle handle,
+                long n, Pointer result, 
+                Pointer x, Pointer y, double scalar)
             {
-                VecDouble.nextafter(n, result, x, y);
+                VecDouble.nextafter(handle, n, result, x, y);
             }
         });
     }
@@ -218,10 +227,11 @@ public class TestVecDoubleMath2 extends AbstractTestVecDouble
             }
             
             @Override
-            protected void computeDevice(long n, CUdeviceptr result, 
-                CUdeviceptr x, CUdeviceptr y, double scalar)
+            protected void computeDevice(VecHandle handle,
+                long n, Pointer result, 
+                Pointer x, Pointer y, double scalar)
             {
-                VecDouble.pow(n, result, x, y);
+                VecDouble.pow(handle, n, result, x, y);
             }
         });
     }
@@ -239,10 +249,11 @@ public class TestVecDoubleMath2 extends AbstractTestVecDouble
             }
             
             @Override
-            protected void computeDevice(long n, CUdeviceptr result, 
-                CUdeviceptr x, CUdeviceptr y, double scalar)
+            protected void computeDevice(VecHandle handle,
+                long n, Pointer result, 
+                Pointer x, Pointer y, double scalar)
             {
-                VecDouble.remainder(n, result, x, y);
+                VecDouble.remainder(handle, n, result, x, y);
             }
         });
     }

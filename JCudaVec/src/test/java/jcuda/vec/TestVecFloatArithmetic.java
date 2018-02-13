@@ -2,7 +2,7 @@
  * JCudaVec - Vector operations for JCuda 
  * http://www.jcuda.org
  *
- * Copyright (c) 2013-2015 Marco Hutter - http://www.jcuda.org
+ * Copyright (c) 2013-2018 Marco Hutter - http://www.jcuda.org
  * 
  * Permission is hereby granted, free of charge, to any person
  * obtaining a copy of this software and associated documentation
@@ -30,11 +30,12 @@ package jcuda.vec;
 
 import org.junit.Test;
 
-import jcuda.driver.CUdeviceptr;
+import jcuda.Pointer;
 
 /**
  * Tests for the vector arithmetic methods
  */
+@SuppressWarnings("javadoc")
 public class TestVecFloatArithmetic extends AbstractTestVecFloat
 {
     @Test
@@ -50,10 +51,11 @@ public class TestVecFloatArithmetic extends AbstractTestVecFloat
             }
             
             @Override
-            protected void computeDevice(long n, CUdeviceptr result,
-                CUdeviceptr x, CUdeviceptr y, float scalar)
+            protected void computeDevice(
+                VecHandle handle, long n, Pointer result,
+                Pointer x, Pointer y, float scalar)
             {
-                VecFloat.add(n, result, x, y);
+                VecFloat.add(handle, n, result, x, y);
             }
         });
     }
@@ -71,10 +73,11 @@ public class TestVecFloatArithmetic extends AbstractTestVecFloat
             }
             
             @Override
-            protected void computeDevice(long n, CUdeviceptr result,
-                CUdeviceptr x, CUdeviceptr y, float scalar)
+            protected void computeDevice(
+                VecHandle handle, long n, Pointer result,
+                Pointer x, Pointer y, float scalar)
             {
-                VecFloat.sub(n, result, x, y);
+                VecFloat.sub(handle, n, result, x, y);
             }
         });
     }
@@ -92,10 +95,11 @@ public class TestVecFloatArithmetic extends AbstractTestVecFloat
             }
             
             @Override
-            protected void computeDevice(long n, CUdeviceptr result,
-                CUdeviceptr x, CUdeviceptr y, float scalar)
+            protected void computeDevice(
+                VecHandle handle, long n, Pointer result,
+                Pointer x, Pointer y, float scalar)
             {
-                VecFloat.mul(n, result, x, y);
+                VecFloat.mul(handle, n, result, x, y);
             }
         });
     }
@@ -113,10 +117,11 @@ public class TestVecFloatArithmetic extends AbstractTestVecFloat
             }
             
             @Override
-            protected void computeDevice(long n, CUdeviceptr result,
-                CUdeviceptr x, CUdeviceptr y, float scalar)
+            protected void computeDevice(
+                VecHandle handle, long n, Pointer result,
+                Pointer x, Pointer y, float scalar)
             {
-                VecFloat.div(n, result, x, y);
+                VecFloat.div(handle, n, result, x, y);
             }
         });
     }
@@ -134,10 +139,11 @@ public class TestVecFloatArithmetic extends AbstractTestVecFloat
             }
             
             @Override
-            protected void computeDevice(long n, CUdeviceptr result,
-                CUdeviceptr x, CUdeviceptr y, float scalar)
+            protected void computeDevice(
+                VecHandle handle, long n, Pointer result,
+                Pointer x, Pointer y, float scalar)
             {
-                VecFloat.negate(n, result, x);
+                VecFloat.negate(handle, n, result, x);
             }
         });
     }

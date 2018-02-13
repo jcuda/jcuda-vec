@@ -2,7 +2,7 @@
  * JCudaVec - Vector operations for JCuda 
  * http://www.jcuda.org
  *
- * Copyright (c) 2013-2015 Marco Hutter - http://www.jcuda.org
+ * Copyright (c) 2013-2018 Marco Hutter - http://www.jcuda.org
  * 
  * Permission is hereby granted, free of charge, to any person
  * obtaining a copy of this software and associated documentation
@@ -30,11 +30,12 @@ package jcuda.vec;
 
 import org.junit.Test;
 
-import jcuda.driver.CUdeviceptr;
+import jcuda.Pointer;
 
 /**
  * Tests for the vector comparison methods
  */
+@SuppressWarnings("javadoc")
 public class TestVecDoubleComparison extends AbstractTestVecDouble
 {
     @Test
@@ -50,10 +51,11 @@ public class TestVecDoubleComparison extends AbstractTestVecDouble
             }
             
             @Override
-            protected void computeDevice(long n, CUdeviceptr result,
-                CUdeviceptr x, CUdeviceptr y, double scalar)
+            protected void computeDevice(VecHandle handle,
+                long n, Pointer result,
+                Pointer x, Pointer y, double scalar)
             {
-                VecDouble.lt(n, result, x, y);
+                VecDouble.lt(handle, n, result, x, y);
             }
         });
     }
@@ -71,10 +73,11 @@ public class TestVecDoubleComparison extends AbstractTestVecDouble
             }
             
             @Override
-            protected void computeDevice(long n, CUdeviceptr result,
-                CUdeviceptr x, CUdeviceptr y, double scalar)
+            protected void computeDevice(VecHandle handle,
+                long n, Pointer result,
+                Pointer x, Pointer y, double scalar)
             {
-                VecDouble.lte(n, result, x, y);
+                VecDouble.lte(handle, n, result, x, y);
             }
         });
     }
@@ -92,10 +95,11 @@ public class TestVecDoubleComparison extends AbstractTestVecDouble
             }
             
             @Override
-            protected void computeDevice(long n, CUdeviceptr result,
-                CUdeviceptr x, CUdeviceptr y, double scalar)
+            protected void computeDevice(VecHandle handle,
+                long n, Pointer result,
+                Pointer x, Pointer y, double scalar)
             {
-                VecDouble.eq(n, result, x, y);
+                VecDouble.eq(handle, n, result, x, y);
             }
         });
     }
@@ -113,10 +117,11 @@ public class TestVecDoubleComparison extends AbstractTestVecDouble
             }
             
             @Override
-            protected void computeDevice(long n, CUdeviceptr result,
-                CUdeviceptr x, CUdeviceptr y, double scalar)
+            protected void computeDevice(VecHandle handle,
+                long n, Pointer result,
+                Pointer x, Pointer y, double scalar)
             {
-                VecDouble.gte(n, result, x, y);
+                VecDouble.gte(handle, n, result, x, y);
             }
         });
     }
@@ -134,10 +139,11 @@ public class TestVecDoubleComparison extends AbstractTestVecDouble
             }
             
             @Override
-            protected void computeDevice(long n, CUdeviceptr result,
-                CUdeviceptr x, CUdeviceptr y, double scalar)
+            protected void computeDevice(VecHandle handle,
+                long n, Pointer result,
+                Pointer x, Pointer y, double scalar)
             {
-                VecDouble.gt(n, result, x, y);
+                VecDouble.gt(handle, n, result, x, y);
             }
         });
     }
@@ -156,10 +162,11 @@ public class TestVecDoubleComparison extends AbstractTestVecDouble
             }
             
             @Override
-            protected void computeDevice(long n, CUdeviceptr result,
-                CUdeviceptr x, CUdeviceptr y, double scalar)
+            protected void computeDevice(VecHandle handle,
+                long n, Pointer result,
+                Pointer x, Pointer y, double scalar)
             {
-                VecDouble.ne(n, result, x, y);
+                VecDouble.ne(handle, n, result, x, y);
             }
         });
     }

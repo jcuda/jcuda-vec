@@ -2,7 +2,7 @@
  * JCudaVec - Vector operations for JCuda 
  * http://www.jcuda.org
  *
- * Copyright (c) 2013-2015 Marco Hutter - http://www.jcuda.org
+ * Copyright (c) 2013-2018 Marco Hutter - http://www.jcuda.org
  * 
  * Permission is hereby granted, free of charge, to any person
  * obtaining a copy of this software and associated documentation
@@ -30,7 +30,7 @@ package jcuda.vec;
 
 import java.util.Random;
 
-import jcuda.driver.CUdeviceptr;
+import jcuda.Pointer;
 
 /**
  * Utility class to run an {@link AbstractCoreFloat}
@@ -55,12 +55,17 @@ class VecFloatCoreRunner
         final float hostResultReference[] = new float[n];
         final float scalar = 0.5f;
         
-        CUdeviceptr deviceX = TestUtil.createDevicePointerFloat(hostX);
-        CUdeviceptr deviceY = TestUtil.createDevicePointerFloat(hostY);
-        CUdeviceptr deviceResult = TestUtil.createDevicePointerFloat(n);
+        VecHandle handle = Vec.createHandle(); 
+        
+        Pointer deviceX = TestUtil.createDevicePointerFloat(hostX);
+        Pointer deviceY = TestUtil.createDevicePointerFloat(hostY);
+        Pointer deviceResult = TestUtil.createDevicePointerFloat(n);
         
         testCore.computeHost(n, hostResultReference, hostX, hostY, scalar);
-        testCore.computeDevice(n, deviceResult, deviceX, deviceY, scalar);
+        testCore.computeDevice(
+            handle, n, deviceResult, deviceX, deviceY, scalar);
+        
+        Vec.destroyHandle(handle);
 
         float hostResult[] = TestUtil.createHostDataFloat(deviceResult, n);
         boolean passed = TestUtil.equalFloat(
